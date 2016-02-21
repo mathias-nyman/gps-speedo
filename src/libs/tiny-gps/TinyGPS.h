@@ -25,7 +25,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 #define TinyGPS_h
 
 #if defined(ARDUINO) && ARDUINO >= 100
-#include "Arduino.h"
+#include "application.h"
 #else
 #include "WProgram.h"
 #endif
@@ -91,8 +91,8 @@ public:
 
   static int library_version() { return _GPS_VERSION; }
 
-  static float distance_between (float lat1, float long1, float lat2, float long2);
-  static float course_to (float lat1, float long1, float lat2, float long2);
+//  static float distance_between (float lat1, float long1, float lat2, float long2);
+//  static float course_to (float lat1, float long1, float lat2, float long2);
   static const char *cardinal(float course);
 
 #ifndef _GPS_NO_STATS
