@@ -2,8 +2,7 @@
 #define _ADAFRUIT_GFX_H
 
 #if ARDUINO >= 100
- #include "Arduino.h"
- #include "Print.h"
+ #include "application.h"
 #else
  #include "WProgram.h"
 #endif
