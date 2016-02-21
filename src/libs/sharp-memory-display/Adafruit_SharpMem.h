@@ -17,12 +17,12 @@ All text above, and the splash screen must be included in any redistribution
 *********************************************************************/
 
 #if ARDUINO >= 100
- #include "Arduino.h"
+ #include "application.h"
 #else
  #include "WProgram.h"
 #endif
  
-#include <Adafruit_GFX.h>
+#include "Adafruit_GFX.h"
 #ifdef __AVR
   #include <avr/pgmspace.h>
 #elif defined(ESP8266)
@@ -44,8 +44,7 @@ class Adafruit_SharpMem : public Adafruit_GFX {
 
  private:
   uint8_t _ss, _clk, _mosi;
-  volatile uint8_t *dataport, *clkport;
-  uint8_t _sharpmem_vcom, datapinmask, clkpinmask;
+  uint8_t _sharpmem_vcom;
   
   void sendbyte(uint8_t data);
   void sendbyteLSB(uint8_t data);

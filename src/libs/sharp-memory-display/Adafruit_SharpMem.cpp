@@ -67,11 +67,6 @@ Adafruit_GFX(SHARPMEM_LCDWIDTH, SHARPMEM_LCDHEIGHT) {
   pinMode(_clk, OUTPUT);
   pinMode(_mosi, OUTPUT);
   
-  clkport     = portOutputRegister(digitalPinToPort(_clk));
-  clkpinmask  = digitalPinToBitMask(_clk);
-  dataport    = portOutputRegister(digitalPinToPort(_mosi));
-  datapinmask = digitalPinToBitMask(_mosi);
-  
   // Set the vcom bit to a defined state
   _sharpmem_vcom = SHARPMEM_BIT_VCOM;
 
@@ -99,23 +94,18 @@ void Adafruit_SharpMem::sendbyte(uint8_t data)
   for (i=0; i<8; i++) 
   { 
     // Make sure clock starts low
-    //digitalWrite(_clk, LOW);
-    *clkport &= ~clkpinmask;
+    digitalWrite(_clk, LOW);
     if (data & 0x80) 
-      //digitalWrite(_mosi, HIGH);
-      *dataport |=  datapinmask;
+      digitalWrite(_mosi, HIGH);
     else 
-      //digitalWrite(_mosi, LOW);
-      *dataport &= ~datapinmask;
+      digitalWrite(_mosi, LOW);
 
     // Clock is active high
-    //digitalWrite(_clk, HIGH);
-    *clkport |=  clkpinmask;
+    digitalWrite(_clk, HIGH);
     data <<= 1; 
   }
   // Make sure clock ends low
-  //digitalWrite(_clk, LOW);
-  *clkport &= ~clkpinmask;
+  digitalWrite(_clk, LOW);
 }
 
 void Adafruit_SharpMem::sendbyteLSB(uint8_t data) 
@@ -126,22 +116,17 @@ void Adafruit_SharpMem::sendbyteLSB(uint8_t data)
   for (i=0; i<8; i++) 
   { 
     // Make sure clock starts low
-    //digitalWrite(_clk, LOW);
-    *clkport &= ~clkpinmask;
+    digitalWrite(_clk, LOW);
     if (data & 0x01) 
-      //digitalWrite(_mosi, HIGH);
-      *dataport |=  datapinmask;
+      digitalWrite(_mosi, HIGH);
     else 
-      //digitalWrite(_mosi, LOW);
-      *dataport &= ~datapinmask;
+      digitalWrite(_mosi, LOW);
     // Clock is active high
-    //digitalWrite(_clk, HIGH);
-    *clkport |=  clkpinmask;
+    digitalWrite(_clk, HIGH);
     data >>= 1; 
   }
   // Make sure clock ends low
-  //digitalWrite(_clk, LOW);
-  *clkport &= ~clkpinmask;
+  digitalWrite(_clk, LOW);
 }
 /* ************** */
 /* PUBLIC METHODS */
@@ -150,7 +135,14 @@ void Adafruit_SharpMem::sendbyteLSB(uint8_t data)
 // 1<<n is a costly operation on AVR -- table usu. smaller & faster
 static const uint8_t PROGMEM
   set[] = {  1,  2,  4,  8,  16,  32,  64,  128 },
-  clr[] = { ~1, ~2, ~4, ~8, ~16, ~32, ~64, ~128 };
+  clr[] = { static_cast<uint8_t>(~1),
+            static_cast<uint8_t>(~2),
+            static_cast<uint8_t>(~4),
+            static_cast<uint8_t>(~8),
+            static_cast<uint8_t>(~16),
+            static_cast<uint8_t>(~32),
+            static_cast<uint8_t>(~64),
+            static_cast<uint8_t>(~128) };
 
 /**************************************************************************/
 /*! 
