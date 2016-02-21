@@ -68,6 +68,13 @@ program-openocd: $(TARGET_BASE).bin
 
 endif
 
+# BSD vs Linux = insanity
+ifeq (LINUX, $(MAKE_OS))
+STTY=stty -F
+else
+STTY=stty -f
+endif
+
 # Program the core using dfu-util. The core should have been placed
 # in bootloader mode before invoking 'make program-dfu'
 program-dfu: $(TARGET_BASE).dfu
@@ -78,7 +85,7 @@ ifeq ("$(wildcard $(PARTICLE_SERIAL_DEV))","")
 	@echo Serial device PARTICLE_SERIAL_DEV : $(PARTICLE_SERIAL_DEV) not available
 else
 	@echo Entering dfu bootloader mode:
-	stty -f $(PARTICLE_SERIAL_DEV) $(START_DFU_FLASHER_SERIAL_SPEED)
+	$(STTY) $(PARTICLE_SERIAL_DEV) $(START_DFU_FLASHER_SERIAL_SPEED)
 	sleep 1
 endif
 endif
@@ -100,7 +107,7 @@ ifeq ("$(wildcard $(PARTICLE_SERIAL_DEV))","")
 	@echo Serial device PARTICLE_SERIAL_DEV : $(PARTICLE_SERIAL_DEV) not available
 else
 	@echo Entering serial programmer mode:
-	stty -f $(PARTICLE_SERIAL_DEV) $(START_YMODEM_FLASHER_SERIAL_SPEED)
+	$(STTY) $(PARTICLE_SERIAL_DEV) $(START_YMODEM_FLASHER_SERIAL_SPEED)
 	sleep 1
 	@echo Flashing using serial ymodem protocol:
 # Got some issue currently in getting 'sz' working
